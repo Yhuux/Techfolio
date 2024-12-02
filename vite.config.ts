@@ -5,5 +5,5 @@ import "dotenv/config";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/Photofolio",
+  base: "/Techfolio",
 });

@@ -6,16 +6,17 @@ import { MENU_ITEMS } from "../constants";
 import { iconMap } from "../utils/icons";
 import { getIconColor } from "../utils/colors";
 import type { MenuItem } from "../types";
+import type { IconName } from "../types/icons";
 
-const NavLink = memo(function NavLink({ 
-  to, 
-  icon, 
-  title, 
-  onClick 
-}: MenuItem & { 
+const NavLink = memo(function NavLink({
+  to,
+  icon,
+  title,
+  onClick,
+}: MenuItem & {
   onClick?: () => void;
 }) {
-  const IconComponent = iconMap[icon.toLowerCase()];
+  const IconComponent = iconMap[icon.toLowerCase() as IconName];
   const iconColor = getIconColor(icon);
 
   // For the Home link, we'll scroll to top instead of using the regular Link component
@@ -23,7 +24,7 @@ const NavLink = memo(function NavLink({
     return (
       <button
         onClick={() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.scrollTo({ top: 0, behavior: "smooth" });
           onClick?.();
         }}
         className="flex items-center gap-2 text-gray-300 hover:text-primary-400 font-medium cursor-pointer 
@@ -34,10 +35,12 @@ const NavLink = memo(function NavLink({
         aria-label={`Navigate to ${title}`}
       >
         {IconComponent && (
-          <div className={`p-1.5 ${iconColor.bgColor} rounded-lg transition-colors duration-300 border ${iconColor.borderColor}`}>
-            <IconComponent 
+          <div
+            className={`p-1.5 ${iconColor.bgColor} rounded-lg transition-colors duration-300 border ${iconColor.borderColor}`}
+          >
+            <IconComponent
               className={`w-4 h-4 ${iconColor.textColor} ${iconColor.hoverColor}`}
-              aria-hidden="true" 
+              aria-hidden="true"
             />
           </div>
         )}
@@ -45,7 +48,7 @@ const NavLink = memo(function NavLink({
       </button>
     );
   }
-  
+
   return (
     <Link
       to={to}
@@ -60,10 +63,12 @@ const NavLink = memo(function NavLink({
       aria-label={`Navigate to ${title} section`}
     >
       {IconComponent && (
-        <div className={`p-1.5 ${iconColor.bgColor} rounded-lg transition-colors duration-300 border ${iconColor.borderColor}`}>
-          <IconComponent 
+        <div
+          className={`p-1.5 ${iconColor.bgColor} rounded-lg transition-colors duration-300 border ${iconColor.borderColor}`}
+        >
+          <IconComponent
             className={`w-4 h-4 ${iconColor.textColor} ${iconColor.hoverColor}`}
-            aria-hidden="true" 
+            aria-hidden="true"
           />
         </div>
       )}
@@ -72,24 +77,25 @@ const NavLink = memo(function NavLink({
   );
 });
 
-NavLink.displayName = 'NavLink';
+NavLink.displayName = "NavLink";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, []);
 
   const closeMenu = useCallback(() => {
     setIsOpen(false);
   }, []);
 
-  const MenuIconComponent = iconMap[isOpen ? 'x' : 'menu'];
-  const menuIconColor = getIconColor(isOpen ? 'x' : 'menu');
+  const MenuIconName = (isOpen ? "x" : "menu") as IconName;
+  const MenuIconComponent = iconMap[MenuIconName];
+  const menuIconColor = getIconColor(MenuIconName);
 
   return (
-    <motion.nav 
+    <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
@@ -101,16 +107,25 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <button
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="flex items-center gap-2.5 cursor-pointer"
             aria-label="Go to top"
           >
-            <div className={`p-2 ${getIconColor('brain').bgColor} rounded-xl border ${getIconColor('brain').borderColor}`}>
-              <Brain className={`w-6 h-6 ${getIconColor('brain').textColor}`} aria-hidden="true" />
+            <div
+              className={`p-2 ${
+                getIconColor("brain").bgColor
+              } rounded-xl border ${getIconColor("brain").borderColor}`}
+            >
+              <Brain
+                className={`w-6 h-6 ${getIconColor("brain").textColor}`}
+                aria-hidden="true"
+              />
             </div>
             <div>
               <span className="text-xl font-bold gradient-text">DataMind</span>
-              <span className="hidden sm:block text-xs text-gray-400">AI Solutions</span>
+              <span className="hidden sm:block text-xs text-gray-400">
+                AI Solutions
+              </span>
             </div>
           </button>
 
@@ -134,9 +149,9 @@ export default function Navbar() {
             aria-label={isOpen ? "Close menu" : "Open menu"}
           >
             {MenuIconComponent && (
-              <MenuIconComponent 
-                className={`w-5 h-5 ${menuIconColor.textColor} ${menuIconColor.hoverColor}`} 
-                aria-hidden="true" 
+              <MenuIconComponent
+                className={`w-5 h-5 ${menuIconColor.textColor} ${menuIconColor.hoverColor}`}
+                aria-hidden="true"
               />
             )}
           </button>
@@ -146,10 +161,10 @@ export default function Navbar() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div 
+          <motion.div
             id="mobile-menu"
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
             className="md:hidden glass-effect border-t border-slate-700/50"
@@ -158,9 +173,9 @@ export default function Navbar() {
           >
             <div className="px-4 py-2 space-y-1">
               {MENU_ITEMS.map((item) => (
-                <NavLink 
-                  key={`mobile-${item.to}-${item.title}`} 
-                  {...item} 
+                <NavLink
+                  key={`mobile-${item.to}-${item.title}`}
+                  {...item}
                   onClick={closeMenu}
                 />
               ))}
