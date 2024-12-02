@@ -1,112 +1,124 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 interface HeadProps {
   title?: string;
   description?: string;
   image?: string;
   url?: string;
+  type?: string;
 }
 
 export default function Head({
-  title = 'DataMind - AI Solutions',
-  description = 'Advanced Machine Learning Solutions and AI Services',
-  image = '/og-image.jpg',
-  url = 'https://datamind.ai'
+  title = "DataMind - AI Solutions",
+  description = "Advanced Machine Learning Solutions and AI Services",
+  image = "/og-image.jpg",
+  url = "https://datamind.ai",
+  type = "website",
 }: HeadProps) {
   useEffect(() => {
-    // Update document title
-    document.title = title;
-
-    // Update meta tags
-    updateMetaTag('description', description);
-    updateMetaTag('og:title', title);
-    updateMetaTag('og:description', description);
-    updateMetaTag('og:image', image);
-    updateMetaTag('og:url', url);
-    updateMetaTag('twitter:title', title);
-    updateMetaTag('twitter:description', description);
-    updateMetaTag('twitter:image', image);
-    updateMetaTag('twitter:card', 'summary_large_image');
-    
-    // Add additional SEO meta tags
-    updateMetaTag('apple-mobile-web-app-title', 'DataMind');
-    updateMetaTag('application-name', 'DataMind');
-    updateMetaTag('msapplication-TileColor', '#0ea5e9');
-    updateMetaTag('theme-color', '#0ea5e9');
-
-    // Update language tag if needed
-    document.documentElement.lang = 'en';
-
-    // Add JSON-LD structured data
+    // Structured data for organization
     const structuredData = [
       {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        name: 'DataMind',
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: "DataMind",
         description,
         url,
-        logo: `${url}/logo.png`,
+        logo: {
+          "@type": "ImageObject",
+          url: `${url}/logo.png`,
+          width: "180",
+          height: "180",
+        },
         sameAs: [
-          'https://twitter.com/datamind',
-          'https://linkedin.com/company/datamind'
-        ]
+          "https://twitter.com/datamind",
+          "https://linkedin.com/company/datamind",
+          "https://github.com/datamind",
+        ],
       },
       {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        name: 'DataMind',
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "DataMind",
         url,
         potentialAction: {
-          '@type': 'SearchAction',
-          target: `${url}/search?q={search_term_string}`,
-          'query-input': 'required name=search_term_string'
-        }
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${url}/search?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
       },
-      {
-        '@context': 'https://schema.org',
-        '@type': 'BreadcrumbList',
-        itemListElement: [
-          {
-            '@type': 'ListItem',
-            position: 1,
-            name: 'Home',
-            item: url
-          },
-          {
-            '@type': 'ListItem',
-            position: 2,
-            name: 'Skills',
-            item: `${url}#skills`
-          },
-          {
-            '@type': 'ListItem',
-            position: 3,
-            name: 'Projects',
-            item: `${url}#projects`
-          }
-        ]
-      }
     ];
 
-    let scriptTag = document.querySelector<HTMLScriptElement>('#structured-data');
+    // Update structured data
+    let scriptTag =
+      document.querySelector<HTMLScriptElement>("#structured-data");
     if (!scriptTag) {
-      scriptTag = document.createElement('script');
-      scriptTag.id = 'structured-data';
-      scriptTag.type = 'application/ld+json';
+      scriptTag = document.createElement("script");
+      scriptTag.id = "structured-data";
+      scriptTag.type = "application/ld+json";
       document.head.appendChild(scriptTag);
     }
     scriptTag.textContent = JSON.stringify(structuredData);
-  }, [title, description, image, url]);
+  }, [description, url]);
 
-  return null;
-}
+  return (
+    <Helmet>
+      {/* Primary Meta Tags */}
+      <title>{title}</title>
+      <meta name="title" content={title} />
+      <meta name="description" content={description} />
 
-function updateMetaTag(name: string, content: string) {
-  let meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"], meta[property="${name}"]`);
-  if (!meta) {
-    meta = document.createElement('meta');
-    meta.setAttribute(name.includes('og:') || name.includes('twitter:') ? 'property' : 'name', name);
-    document.head.appendChild(meta);
-  }
-  meta.setAttribute('content', content);
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content={type} />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:image" content={image} />
+
+      {/* Twitter */}
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:url" content={url} />
+      <meta property="twitter:title" content={title} />
+      <meta property="twitter:description" content={description} />
+      <meta property="twitter:image" content={image} />
+
+      {/* PWA Tags */}
+      <meta name="theme-color" content="#0ea5e9" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta
+        name="apple-mobile-web-app-status-bar-style"
+        content="black-translucent"
+      />
+      <meta name="apple-mobile-web-app-title" content="DataMind" />
+
+      {/* Performance & Security */}
+      <meta http-equiv="X-DNS-Prefetch-Control" content="on" />
+      <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+      <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+      <link rel="preconnect" href="//fonts.googleapis.com" />
+      <link rel="preconnect" href="//fonts.gstatic.com" crossOrigin="" />
+
+      {/* Security Headers */}
+      <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+      <meta
+        http-equiv="Referrer-Policy"
+        content="strict-origin-when-cross-origin"
+      />
+      <meta
+        http-equiv="Permissions-Policy"
+        content="camera=(), microphone=(), geolocation=()"
+      />
+
+      {/* Accessibility */}
+      <html lang="en" />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+      />
+    </Helmet>
+  );
 }

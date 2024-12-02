@@ -1,50 +1,66 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { HelmetProvider } from "react-helmet-async";
+import { Analytics } from "@vercel/analytics/react";
+import App from "./App.tsx";
+import "./index.css";
 
 // Performance monitoring
 const reportWebVitals = () => {
-  if ('performance' in window && 'getEntriesByType' in performance) {
-    // Core Web Vitals
-    const cls = window.sessionStorage.getItem('CLS') || '0';
-    const fid = window.sessionStorage.getItem('FID') || '0';
-    const lcp = window.sessionStorage.getItem('LCP') || '0';
+  if ("performance" in window && "getEntriesByType" in performance) {
+    const navEntry = performance.getEntriesByType(
+      "navigation"
+    )[0] as PerformanceNavigationTiming;
 
-    // Report to analytics (implement your analytics service here)
-    console.info('Web Vitals:', {
-      cls: parseFloat(cls),
-      fid: parseFloat(fid),
-      lcp: parseFloat(lcp)
-    });
+    const metrics = {
+      cls: parseFloat(sessionStorage.getItem("CLS") || "0"),
+      fid: parseFloat(sessionStorage.getItem("FID") || "0"),
+      lcp: parseFloat(sessionStorage.getItem("LCP") || "0"),
+      fcp:
+        performance
+          .getEntriesByType("paint")
+          .find((entry) => entry.name === "first-contentful-paint")
+          ?.startTime || 0,
+      ttfb: navEntry?.responseStart || 0,
+    };
+
+    // Report to analytics
+    console.info("Web Vitals:", metrics);
   }
 };
 
-// Enable React concurrent features with error boundary
-const container = document.getElementById('root');
+// Error boundaries for root render
+const container = document.getElementById("root");
 if (!container) {
-  throw new Error('Failed to find root element');
+  throw new Error("Failed to find root element");
 }
 
 const root = createRoot(container);
 
-// Add error handling for root render
 try {
   root.render(
     <StrictMode>
-      <App />
+      <HelmetProvider>
+        <App />
+        <Analytics debug={false} />
+      </HelmetProvider>
     </StrictMode>
-  )
+  );
 
-  // Remove initial loader
-  const loader = document.querySelector('.initial-loader');
+  // Remove loader with fade out
+  const loader = document.querySelector(".initial-loader");
   if (loader && loader.parentNode) {
-    loader.parentNode.removeChild(loader);
+    loader.classList.add("fade-out");
+    setTimeout(() => {
+      if (loader && loader.parentNode) {
+        loader.parentNode.removeChild(loader);
+      }
+    }, 300);
   }
 } catch (error) {
-  console.error('Failed to render app:', error)
+  console.error("Failed to render app:", error);
   root.render(
-    <div 
+    <div
       className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-900 text-white"
       role="alert"
       aria-live="assertive"
@@ -52,45 +68,63 @@ try {
       <h1 className="text-2xl font-bold mb-4">Something went wrong</h1>
       <p className="text-gray-400">Please try refreshing the page</p>
     </div>
-  )
+  );
 }
 
-// Performance monitoring
-if ('PerformanceObserver' in window) {
-  // Cumulative Layout Shift
+// Enhanced performance monitoring
+if ("PerformanceObserver" in window) {
+  // CLS
   try {
     new PerformanceObserver((entryList) => {
       for (const entry of entryList.getEntries()) {
-        if ('hadRecentInput' in entry && !(entry as any).hadRecentInput) {
+        if (!("hadRecentInput" in entry) || !(entry as any).hadRecentInput) {
           const cls = (entry as any).value;
-          window.sessionStorage.setItem('CLS', String(cls));
+          sessionStorage.setItem("CLS", String(cls));
         }
       }
-    }).observe({ entryTypes: ['layout-shift'] });
+    }).observe({ entryTypes: ["layout-shift"] });
 
-    // First Input Delay
+    // FID
     new PerformanceObserver((entryList) => {
       for (const entry of entryList.getEntries()) {
         if (entry instanceof PerformanceEventTiming) {
           const fid = entry.processingStart! - entry.startTime;
-          window.sessionStorage.setItem('FID', String(fid));
+          sessionStorage.setItem("FID", String(fid));
         }
       }
-    }).observe({ entryTypes: ['first-input'] });
+    }).observe({ entryTypes: ["first-input"] });
 
-    // Largest Contentful Paint
+    // LCP
+    new PerformanceObserver((entryList) => {
+      const entries = entryList.getEntries();
+      if (entries.length > 0) {
+        const lcp = entries[entries.length - 1];
+        sessionStorage.setItem("LCP", String(lcp.startTime));
+      }
+    }).observe({ entryTypes: ["largest-contentful-paint"] });
+
+    // Navigation and resource timing
     new PerformanceObserver((entryList) => {
       for (const entry of entryList.getEntries()) {
-        if (entry instanceof PerformanceEntry) {
-          const lcp = entry.startTime;
-          window.sessionStorage.setItem('LCP', String(lcp));
+        if (entry.entryType === "navigation") {
+          const navEntry = entry as PerformanceNavigationTiming;
+          sessionStorage.setItem("TTFB", String(navEntry.responseStart));
         }
       }
-    }).observe({ entryTypes: ['largest-contentful-paint'] });
+    }).observe({ entryTypes: ["navigation"] });
   } catch (error) {
-    console.warn('PerformanceObserver error:', error);
+    console.warn("PerformanceObserver error:", error);
   }
 }
 
 // Report metrics after load
-window.addEventListener('load', reportWebVitals);
+window.addEventListener("load", reportWebVitals);
+
+// Register service worker
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch((error) => {
+      console.warn("ServiceWorker registration failed:", error);
+    });
+  });
+}
