@@ -5,16 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MENU_ITEMS } from "../constants";
 import { iconMap } from "../utils/icons";
 import { getIconColor } from "../utils/colors";
+import type { MenuItem } from "../types";
 
 const NavLink = memo(function NavLink({ 
   to, 
   icon, 
   title, 
   onClick 
-}: { 
-  to: string; 
-  icon: string; 
-  title: string; 
+}: MenuItem & { 
   onClick?: () => void;
 }) {
   const IconComponent = iconMap[icon.toLowerCase()];
@@ -74,6 +72,8 @@ const NavLink = memo(function NavLink({
   );
 });
 
+NavLink.displayName = 'NavLink';
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -103,12 +103,13 @@ export default function Navbar() {
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-2.5 cursor-pointer"
+            aria-label="Go to top"
           >
             <div className={`p-2 ${getIconColor('brain').bgColor} rounded-xl border ${getIconColor('brain').borderColor}`}>
               <Brain className={`w-6 h-6 ${getIconColor('brain').textColor}`} aria-hidden="true" />
             </div>
             <div>
-              <span className="text-xl font-bold gradient-text" role="heading" aria-level={1}>DataMind</span>
+              <span className="text-xl font-bold gradient-text">DataMind</span>
               <span className="hidden sm:block text-xs text-gray-400">AI Solutions</span>
             </div>
           </button>
@@ -117,7 +118,7 @@ export default function Navbar() {
           <div className="hidden md:block">
             <div className="flex items-center space-x-2" role="menubar">
               {MENU_ITEMS.map((item) => (
-                <NavLink key={item.to} {...item} />
+                <NavLink key={`${item.to}-${item.title}`} {...item} />
               ))}
             </div>
           </div>
@@ -157,7 +158,11 @@ export default function Navbar() {
           >
             <div className="px-4 py-2 space-y-1">
               {MENU_ITEMS.map((item) => (
-                <NavLink key={item.to} {...item} onClick={closeMenu} />
+                <NavLink 
+                  key={`mobile-${item.to}-${item.title}`} 
+                  {...item} 
+                  onClick={closeMenu}
+                />
               ))}
             </div>
           </motion.div>

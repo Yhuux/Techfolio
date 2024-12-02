@@ -1,7 +1,6 @@
 {
-  "name": "Techfolio",
-  "homepage": "https://yhuux.github.io/Techfolio/",
-  "private": true,
+  "name": "Photofolio",
+  "homepage": "https://yhuux.github.io/Photofolio/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -13,18 +12,32 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@fontsource/roboto": "^5.1.0",
+    "@formkit/auto-animate": "^0.8.2",
+    "@material/elevation": "^14.0.0",
+    "@material/ripple": "^14.0.0",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
+    "@radix-ui/react-toast": "^1.2.2",
+    "@react-hook/intersection-observer": "^3.1.2",
+    "@types/react-scroll": "^1.8.10",
+    "clsx": "^2.1.1",
     "framer-motion": "^11.12.0",
-    "gh-pages": "^6.2.0",
+    "lodash.throttle": "^4.1.1",
     "lucide-react": "^0.453.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-scroll": "^1.9.0"
+    "react-intersection-observer": "^9.13.1",
+    "react-scroll": "^1.9.0",
+    "react-virtualized": "^9.22.5"
   },
   "devDependencies": {
     "@types/react": "^18.3.6",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.20",
+    "dotenv": "^16.4.5",
+    "gh-pages": "^6.2.0",
     "globals": "^15.9.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",

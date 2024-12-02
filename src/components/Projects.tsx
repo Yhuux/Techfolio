@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink, FolderGit2 } from "lucide-react";
+import { FolderGit2 } from "lucide-react";
 import { PROJECTS } from "../constants";
 import SectionTitle from "./ui/SectionTitle";
 import { memo } from "react";
@@ -25,14 +25,14 @@ const ProjectCard = memo(({ project, index }: { project: typeof PROJECTS[0]; ind
             {IconComponent && <IconComponent className="w-6 h-6" />}
           </div>
         </div>
-        <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors duration-300" />
+        <Icons.ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors duration-300" />
       </div>
       <h3 className="text-xl font-semibold mb-4 text-white">
         {project.title}
       </h3>
       <p className="text-gray-300 mb-6 leading-relaxed">{project.description}</p>
       <div className="flex flex-wrap gap-2">
-        {project.tags.map((tag) => (
+        {project.tags.map((tag: string) => (
           <span
             key={tag}
             className={`px-4 py-1.5 ${iconColor.bgColor} ${iconColor.textColor} rounded-full text-sm font-medium

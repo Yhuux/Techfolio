@@ -54,24 +54,22 @@ export const addResourceHint = (
 
 export const prioritizeResources = (): void => {
   // Add priority hints to critical resources
-  const stylesheets = document.querySelectorAll<HTMLLinkElement>(
-    'link[rel="stylesheet"]'
-  );
-  stylesheets.forEach((link) => {
-    // Type safety is now handled by the HTMLLinkElement type
-    if (link.href && link.href.includes("critical")) {
-      link.setAttribute("importance", "high");
-    }
-  });
+  document
+    .querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
+    .forEach((link) => {
+      if (link.href.includes("critical")) {
+        // Use setAttribute for experimental attributes
+        link.setAttribute("importance", "high");
+      }
+    });
 
   // Defer non-critical images
-  const images =
-    document.querySelectorAll<HTMLImageElement>("img:not([loading])");
-  images.forEach((img) => {
-    const inCriticalSection = img.closest("header, nav") !== null;
-    if (!inCriticalSection) {
-      img.loading = "lazy";
-      img.decoding = "async";
-    }
-  });
+  document
+    .querySelectorAll<HTMLImageElement>("img:not([loading])")
+    .forEach((img) => {
+      if (!img.closest("header, nav")) {
+        img.loading = "lazy";
+        img.decoding = "async";
+      }
+    });
 };

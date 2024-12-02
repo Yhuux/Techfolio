@@ -4,23 +4,27 @@ interface ViewportOptions {
   threshold?: number;
   rootMargin?: string;
   once?: boolean;
+  root?: Element | null;
 }
 
 export const useViewportEntry = ({
   threshold = 0.1,
   rootMargin = '-100px',
-  once = true
+  once = true,
+  root = null
 }: ViewportOptions = {}) => {
-  const ref = useRef<HTMLElement | null>(null);
+  const elementRef = useRef<HTMLElement | null>(null);
   const [isInView, setIsInView] = useState(false);
   const hasTriggered = useRef(false);
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const callback = useCallback((entries: IntersectionObserverEntry[]) => {
     const [entry] = entries;
     if (entry?.isIntersecting) {
       setIsInView(true);
-      if (once && ref.current && !hasTriggered.current) {
+      if (once && elementRef.current && !hasTriggered.current) {
         hasTriggered.current = true;
+        observer.current?.unobserve(elementRef.current);
       }
     } else if (!once) {
       setIsInView(false);
@@ -28,22 +32,36 @@ export const useViewportEntry = ({
   }, [once]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(callback, {
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsInView(true);
+      return;
+    }
+
+    observer.current = new IntersectionObserver(callback, {
       threshold,
       rootMargin,
+      root
     });
 
-    const currentRef = ref.current;
+    const currentRef = elementRef.current;
     if (currentRef) {
-      observer.observe(currentRef);
+      observer.current.observe(currentRef);
     }
 
     return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
+      if (currentRef && observer.current) {
+        observer.current.unobserve(currentRef);
       }
+      observer.current?.disconnect();
     };
-  }, [callback, rootMargin, threshold]);
+  }, [callback, root, rootMargin, threshold]);
+
+  const ref = useCallback((node: HTMLElement | null) => {
+    elementRef.current = node;
+    if (node && observer.current) {
+      observer.current.observe(node);
+    }
+  }, []);
 
   return { ref, isInView };
 };

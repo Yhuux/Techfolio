@@ -1,3 +1,5 @@
+import type { MenuItem, Project, Skill } from '../types';
+
 export const MENU_ITEMS: MenuItem[] = [
   { title: "Home", to: "top", icon: "layout" },
   { title: "Skills", to: "skills", icon: "lightbulb" },
