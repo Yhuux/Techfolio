@@ -1,0 +1,173 @@
+@layer components {
+  .card-base {
+    @apply bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-soft hover:shadow-lg transition-all duration-300 
+      border-2 border-slate-700 hover:border-primary-500/20 contain-content focus-within:ring-2 
+      focus-within:ring-primary-500;
+  }
+
+  .icon-container {
+    @apply p-3 bg-slate-700/50 rounded-xl contain-size;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 to-secondary-400 bg-clip-text text-transparent;
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 text-gray-300 hover:text-primary-400 font-medium cursor-pointer 
+      transition-colors duration-200 px-4 py-3 rounded-xl hover:bg-slate-700 text-lg border-2 border-transparent
+      hover:border-slate-600 contain-paint focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+
+  .tag {
+    @apply px-4 py-1.5 bg-slate-700 text-primary-400 rounded-full text-sm font-medium
+      border border-primary-400/20 contain-paint;
+  }
+
+  /* Enhanced accessibility */
+  .focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-slate-900;
+  }
+
+  /* Enhanced keyboard navigation */
+  .keyboard-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 
+      focus:ring-offset-slate-900 transition-shadow duration-200;
+  }
+}
+
+/* CSS Containment optimizations */
+.contain-content {
+  contain: content;
+}
+
+.contain-size {
+  contain: size;
+}
+
+.contain-paint {
+  contain: paint;
+}
+
+/* Enhanced reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-spin, 
+  .animate-pulse,
+  .animate-bounce {
+    animation: none !important;
+  }
+}
+
+/* Enhanced print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    color: #000;
+    background: #fff;
+    font-size: 12pt;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+  
+  a[href^="http"]:after {
+    content: " (" attr(href) ")";
+  }
+  
+  @page {
+    margin: 2cm;
+    size: A4;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+}
+
+/* Enhanced high contrast mode support */
+@media (forced-colors: active) {
+  .card-base {
+    border: 2px solid CanvasText;
+  }
+  
+  .gradient-text {
+    -webkit-text-fill-color: unset;
+    background: unset;
+    color: CanvasText;
+  }
+  
+  .button {
+    border: 2px solid ButtonText;
+    color: ButtonText;
+    background: ButtonFace;
+  }
+  
+  .icon {
+    forced-color-adjust: auto;
+  }
+}
+
+/* Enhanced performance optimizations */
+img {
+  content-visibility: auto;
+  aspect-ratio: attr(width) / attr(height);
+}
+
+.maintain-height {
+  min-height: 0vh;
+  contain-intrinsic-size: 0 500px;
+  content-visibility: auto;
+}
+
+/* Loading state optimizations */
+.loading-skeleton {
+  @apply animate-pulse bg-slate-700/50 rounded;
+  contain: strict;
+}
+
+/* Enhanced tap targets for mobile */
+@media (max-width: 640px) {
+  button, 
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px;
+  }
+  
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    padding: 12px;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+/* Focus indicators for Windows High Contrast mode */
+@media screen and (-ms-high-contrast: active) {
+  *:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+}

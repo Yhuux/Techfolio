@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './styles/common.css';
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+}
+
+@layer base {
+  html, body {
+    @apply w-full overflow-x-hidden;
+  }
+  
+  body {
+    @apply antialiased text-gray-100 bg-slate-900 min-w-[320px];
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer utilities {
+  .glass-effect {
+    @apply bg-slate-800/80 backdrop-blur-md;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  html {
+    touch-action: manipulation;
+  }
+  
+  /* Prevent content from being obscured by browser chrome */
+  .min-h-screen {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Smooth scrolling with reduced motion preference support */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}

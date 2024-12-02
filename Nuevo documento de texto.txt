@@ -1,0 +1,8 @@
+"predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+"lint": "eslint src --ext js.jsx --report-unused-disable-directives --max-warnings 0",
+"homepage": "https://yhuux.github.io/Photofolio/",
+
+
+import "dotenv/config";
+base: "/Photofolio",
