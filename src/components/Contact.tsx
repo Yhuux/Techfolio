@@ -30,15 +30,15 @@ export default function Contact() {
         </motion.div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center justify-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true, margin: "-100px" }}
-              className="space-y-8 md:mt-8"
+              className="space-y-8 flex flex-col items-center md:items-start"
             >
-              <div className="flex items-center space-x-6 group justify-center md:justify-start">
+              <div className="flex items-center space-x-6 group">
                 <div className={`p-4 ${mailColor.bgColor} rounded-xl transition-colors duration-300 border ${mailColor.borderColor}`}>
                   <Mail className={`w-6 h-6 ${mailColor.textColor} ${mailColor.hoverColor}`} />
                 </div>
@@ -51,7 +51,7 @@ export default function Contact() {
                   orionstelaris04@gmail.com
                 </a>
               </div>
-              <div className="flex items-center space-x-6 group justify-center md:justify-start">
+              <div className="flex items-center space-x-6 group">
                 <div className={`p-4 ${phoneColor.bgColor} rounded-xl transition-colors duration-300 border ${phoneColor.borderColor}`}>
                   <Phone className={`w-6 h-6 ${phoneColor.textColor} ${phoneColor.hoverColor}`} />
                 </div>
@@ -64,7 +64,7 @@ export default function Contact() {
                   +55 (47) 99767-3790
                 </a>
               </div>
-              <div className="flex items-center space-x-6 group justify-center md:justify-start">
+              <div className="flex items-center space-x-6 group">
                 <div className={`p-4 ${locationColor.bgColor} rounded-xl transition-colors duration-300 border ${locationColor.borderColor}`}>
                   <MapPin className={`w-6 h-6 ${locationColor.textColor} ${locationColor.hoverColor}`} />
                 </div>
@@ -84,7 +84,7 @@ export default function Contact() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
               viewport={{ once: true, margin: "-100px" }}
-              className="space-y-6 bg-slate-800/50 p-8 rounded-2xl border border-slate-700"
+              className="space-y-6 bg-slate-800/50 p-8 rounded-2xl border border-slate-700 w-full"
             >
               <div>
                 <input
